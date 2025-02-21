@@ -1,0 +1,4 @@
+[GateServerr]
+Port  = 8080
+[VarifyServer]
+Port = 50051
