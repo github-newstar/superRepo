@@ -1,32 +1,32 @@
-cmake_minimum_required(VERSION 3.30)
+cmake_minimum_required(VERSION 3.10)
 
-project(chatServer VERSION 0.1)
-
+project(GrpcServer LANGUAGES CXX)
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(Boost 1.8.2 REQUIRED COMPONENTS system filesystem)
-find_package(jsoncpp 1.9.6 REQUIRED)
-find_package(Protobuf REQUIRED)
+find_package(jsoncpp REQUIRED)
 find_package(Threads REQUIRED)
+find_package(Boost REQUIRED system filesystem)
+set(protobuf_MODULE_COMPATIBLE TRUE)
+find_package(Protobuf CONFIG REQUIRED)
+message(STATUS "Using protobuf ${Protobuf_VERSION}")
+set(_PROTOBUF_LIBPROTOBUF protobuf::libprotobuf)
+set(_REFLECTION gRPC::grpc++_reflection)
+# Find gRPC installation
+# Looks for gRPCConfig.cmake file installed by gRPC's cmake installation.
 find_package(gRPC CONFIG REQUIRED)
-
-include_directories(${Boost_INCLUDE_DIRS} ${JSONCPP_INCLUDE_DIRS} ${PROTOBUF_INCLUDE_DIRS} ${GRPC_INCLUDE_DIRS})
-
-#protobuf_generate_cpp(PROTO_SRC PROTO_HEADER "./src/message.proto")
-
-
-
-file(GLOB RES_SRC "./src/*.cpp" "./src/*.cc") 
-
-add_executable(chatServer
-        ${RES_SRC}
-)
-
-target_link_libraries(chatServer
- ${Boost_LIBRARIES} 
- jsoncpp
-  ${Protobuf_LIBRARIES}
-  gRPC::grpc++ 
-
-  )
+message(STATUS "Using gRPC ${gRPC_VERSION}")
+set(_GRPC_GRPCPP gRPC::grpc++)
+# 添加可执行文件和源文件
+file(GLOB SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
+file(GLOB PBSOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cc)
+add_executable(GrpcServer ${SOURCES}
+        ${PBSOURCES})
+target_link_libraries(GrpcServer
+    ${_REFLECTION}
+    ${_GRPC_GRPCPP}
+    ${_PROTOBUF_LIBPROTOBUF}
+    ${Boost_LIBRARIES}
+    jsoncpp
+    )

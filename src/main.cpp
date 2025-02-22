@@ -10,7 +10,7 @@ int main() {
     std::string gate_port_str; gCfgMgr["GateServer"]["Port"]; 
     unsigned short gate_port = atoi(gate_port_str.c_str());
     try {
-        unsigned short prot = static_cast<unsigned short>(gate_port);
+        unsigned short prot = gate_port;
         net::io_context ioc{1};
         boost::asio::signal_set signals(ioc, SIGINT, SIGTERM);
         signals.async_wait(
