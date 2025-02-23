@@ -2,10 +2,8 @@
 # C++ 忽略规则
 cpp-project/build/
 *.o
-.cache
 
 # Node.js 忽略规则
 nodejs-project/node_modules/
 nodejs-project/.env
-config.json
 
