@@ -22,7 +22,7 @@ struct SectionInfo {
     }
 };
 
-class ConfigMgr {
+class ConfigMgr  {
   public:
     ~ConfigMgr() { 
         configMap_.clear();
@@ -33,7 +33,6 @@ class ConfigMgr {
         }
         return configMap_[section];
     }
-    ConfigMgr();
     ConfigMgr(const ConfigMgr& src){
         configMap_ = src.configMap_;
     }
@@ -44,8 +43,14 @@ class ConfigMgr {
         configMap_ = src.configMap_;
         return *this;
     }
+    static ConfigMgr& GetInstance(){
+        static ConfigMgr instance;
+        return instance;
+    }
 
   private:
+    //单例私有化构造函数
+    ConfigMgr();
     //存储section和keyvalue的map
     std::map<std::string, SectionInfo> configMap_;
 };

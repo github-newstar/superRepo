@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 
-project(GrpcServer LANGUAGES CXX)
+project(chatServer LANGUAGES CXX)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -21,12 +21,14 @@ set(_GRPC_GRPCPP gRPC::grpc++)
 # 添加可执行文件和源文件
 file(GLOB SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
 file(GLOB PBSOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cc)
-add_executable(GrpcServer ${SOURCES}
+add_executable(chatServer ${SOURCES}
         ${PBSOURCES})
-target_link_libraries(GrpcServer
+target_link_libraries(chatServer
     ${_REFLECTION}
     ${_GRPC_GRPCPP}
     ${_PROTOBUF_LIBPROTOBUF}
     ${Boost_LIBRARIES}
     jsoncpp
+    hiredis
+    redis++
     )

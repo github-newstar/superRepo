@@ -6,7 +6,7 @@
 #include <json/value.h>
 #include"configMgr.hpp"
 int main() {
-    ConfigMgr gCfgMgr;
+    ConfigMgr &gCfgMgr = ConfigMgr::GetInstance();
     std::string gate_port_str  = gCfgMgr["GateServer"]["Port"]; 
     unsigned short gate_port = atoi(gate_port_str.c_str());
     try {

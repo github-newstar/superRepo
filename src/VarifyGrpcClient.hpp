@@ -1,8 +1,11 @@
 #pragma once
 #include<grpcpp/grpcpp.h>
 #include "message.grpc.pb.h"
-#include "const.h"
+// #include "const.h"
 #include "Singleton.hpp"
+#include<queue>
+#include<mutex>
+#include<condition_variable>
 
 using grpc::Channel;
 using grpc::Status;
@@ -10,30 +13,29 @@ using grpc::ClientContext;
 using message::VarifyService;
 using message::GetVarifyReq;
 using message::GetVarifyRsp;
+class RPCconPool {
+  public:
+    RPCconPool(size_t poolSize, std::string host, std::string port); ~RPCconPool();
+    std::unique_ptr<VarifyService::Stub> getConnection();
+    void returnConnection(std::unique_ptr<VarifyService::Stub> cotext);
+    void Close();
+  private:
+  std::atomic_bool bStop_;
+  std::size_t poolSize_;
+  std::string host_;
+  std::string port_;
+  std::queue<std::unique_ptr<VarifyService::Stub>> connections_;;
+  std::mutex mutex_;
+  std::condition_variable cond_;
+};
 
 class VarifyGrpcClient : public Singleton<VarifyGrpcClient>
 {
     friend class Singleton<VarifyGrpcClient>;
 public:
-    GetVarifyRsp GetVarifyCode(std::string email){
-        ClientContext context;
-        GetVarifyReq requset;
-        GetVarifyRsp reply;
-        requset.set_email(email);
-        
-        Status status = stub_->GetVarifyCode(&context, requset, &reply);
-        
-        if(status.ok()){
-            return reply;
-        }else{
-            reply.set_error(ErrorCodes::RPCFailed);
-            return reply;
-        }
-    }
+    GetVarifyRsp GetVarifyCode(std::string email);
+    
 private:
-    VarifyGrpcClient(){
-        std::shared_ptr<Channel> channel = grpc::CreateChannel("127.0.0.1:50051", grpc::InsecureChannelCredentials());
-        stub_ = VarifyService::NewStub(channel);
-    }
-    std::unique_ptr<VarifyService::Stub>  stub_;
+    VarifyGrpcClient();
+    std::unique_ptr<RPCconPool> pool_;
 };

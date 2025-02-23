@@ -2,7 +2,7 @@
 #include <iostream>
 #include "LogicSystem.hpp"
 
-HttpConnection::HttpConnection(tcp::socket socket) : socket_(std::move(socket)) {
+HttpConnection::HttpConnection(boost::asio::io_context & ioc) : socket_(ioc) {
 }
 
 unsigned char ToHex(unsigned char x)
@@ -179,3 +179,4 @@ void HttpConnection::PreaParseGetParam(){
         }
     }
 }
+tcp::socket &HttpConnection::GetSocket() { return socket_; }
