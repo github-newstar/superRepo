@@ -3,6 +3,7 @@
 #include <boost/beast.hpp>
 #include <boost/beast/http.hpp>
 #include <boost/beast/core.hpp>
+#include <sw/redis++/redis++.h>
 
 namespace beast = boost::beast;   // from <boost/beast.hpp>
 namespace http = beast::http;     // from <boost/beast/http.hpp>

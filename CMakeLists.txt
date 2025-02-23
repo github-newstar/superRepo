@@ -32,3 +32,10 @@ target_link_libraries(chatServer
     hiredis
     redis++
     )
+    
+#复制config.ii文件到build 目录
+set(Targetconfig ${CMAKE_CURRENT_SOURCE_DIR}/src/config.ii)
+set(OutPutDir ${CMAKE_BINARY_DIR})
+add_custom_command(TARGET chatServer POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "${Targetconfig}" "${OutPutDir}/config.ii")
